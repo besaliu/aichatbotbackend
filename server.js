@@ -7,27 +7,15 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware to handle CORS manually for serverless environments
-app.use((req, res, next) => {
-  // Set allowed origins - include both your GitHub Pages site and localhost
-  const allowedOrigins = ['https://besaliu.github.io', 'http://localhost:3000'];
-  const origin = req.headers.origin;
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
-  // Handle preflight requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
-  next();
-});
+const corsOptions = {
+  origin: ['https://besaliu.github.io', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.static('./'));
