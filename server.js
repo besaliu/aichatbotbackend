@@ -7,12 +7,21 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware to handle CORS manually for serverless environments
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://besaliu.github.io');  // Adjust this if necessary
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
+// Use the `cors` middleware for handling CORS for most cases
 app.use(cors({
   origin: ['https://besaliu.github.io', 'http://localhost:3000'],
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.static('./'));
 
@@ -93,7 +102,6 @@ app.post('/api/chat', async (req, res) => {
     });
   }
 });
-
 
 // Start server
 app.listen(PORT, () => {
