@@ -9,24 +9,25 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware to handle CORS manually for serverless environments
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://besaliu.github.io');  // Adjust this if necessary
+  // Set allowed origins - include both your GitHub Pages site and localhost
+  const allowedOrigins = ['https://besaliu.github.io', 'http://localhost:3000'];
+  const origin = req.headers.origin;
+  
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
   
-  // Handle preflight (OPTIONS) requests
+  // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    return res.status(200).end(); // Respond immediately to OPTIONS requests
+    return res.status(200).end();
   }
+  
   next();
 });
-
-
-// Use the `cors` middleware for handling CORS for most cases
-app.use(cors({
-  origin: ['https://besaliu.github.io', 'http://localhost:3000'],
-  credentials: true
-}));
 
 app.use(express.json());
 app.use(express.static('./'));
