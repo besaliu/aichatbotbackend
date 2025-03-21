@@ -13,8 +13,14 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight (OPTIONS) requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end(); // Respond immediately to OPTIONS requests
+  }
   next();
 });
+
 
 // Use the `cors` middleware for handling CORS for most cases
 app.use(cors({
